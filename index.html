@@ -7,34 +7,31 @@
     <link rel="stylesheet" href="./css/style.css">
     <style>
         .grid {
-            display: grid;
-            grid-template-rows: repeat(16, 1fr);
-            grid-template-columns: repeat(16, 1fr);
-            border: 1px solid black;
+            display: flex;
+            flex-wrap: wrap;
             width: 400px;
             height: 400px;
         }
 
         .cell {
-            border: 1px solid black;
+            width: 25px;
+            height: 25px;
             background-color: lightgray;
         }
+
+        .cell:hover{
+            background-color: blue;
+        }
+
     </style>
     <title>Etch a Sketch</title>
 </head>
 
 <body>
-    <div class="container"></div>
+    <div class="container">
+        <div class="grid"></div>
+    </div>
 
-    <div class="grid"></div>
-
-    <script>
-        const container = document.querySelector(".container");
-        const newDiv = document.createElement("p");
-        newDiv.classList.add("newDiv");
-        newDiv.textContent = `new div's been created`;
-        container.appendChild(newDiv);
-    </script>
 
     <script>
         const grid = document.querySelector(".grid");
