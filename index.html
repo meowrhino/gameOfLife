@@ -9,8 +9,6 @@
         .grid {
             display: flex;
             flex-wrap: wrap;
-            width: 400px;
-            height: 400px;
         }
 
         .cell {
@@ -18,11 +16,6 @@
             height: 25px;
             background-color: lightgray;
         }
-
-        .cell:hover{
-            background-color: blue;
-        }
-
     </style>
     <title>Etch a Sketch</title>
 </head>
@@ -34,14 +27,52 @@
 
 
     <script>
+        const container = document.querySelector(".container");
         const grid = document.querySelector(".grid");
-        for (let i = 0; i < 16; i++){
-            for (let j = 0; j < 16; j++) {
-                const cell = document.createElement('div');
-                cell.classList.add('cell');
-                grid.appendChild(cell);
+
+        let gridLenght = 16;
+        createGrid();
+        let newGridLenght = 0;
+
+
+
+        const button = document.createElement('button');
+        button.classList.add('gridLenghtInput');
+        button.textContent = "change grid size";
+        button.onclick = function () { newGridLenght = +prompt("how much definition would u like?"); console.log(newGridLenght); updateGrid(); };
+        container.appendChild(button);
+
+        function updateGrid() {
+            console.log("updateGrid was called");
+            if (newGridLenght > 0) {
+                console.log("newGridLenght > 0 is true");
+                console.log(`original grid lenght was ${gridLenght}`);
+                gridLenght = newGridLenght;
+                createGrid();
+                console.log(`new grid lenght is ${gridLenght}`);
+            } else {
+                console.log(`newGridLenght is ${newGridLenght}`);
             }
         }
+
+        function createGrid() {
+            grid.innerHTML = '';
+            for (let i = 0; i < gridLenght; i++) {
+                for (let j = 0; j < gridLenght; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    grid.appendChild(cell);
+
+                    cell.addEventListener("mouseover", function (e) {
+                        cell.style.backgroundColor = "blue";
+                    })
+                }
+            }
+            grid.style.width = `${25*gridLenght}px`;
+            grid.style.height = `${25*gridLenght}px`;
+        }
+
+
     </script>
 
 </body>
