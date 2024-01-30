@@ -66,16 +66,29 @@
                     grid.appendChild(cell);
 
                     cell.addEventListener("mouseover", function (e) {
-                        cell.style.backgroundColor = random_rgba();
-                        var oldOpacity = +cell.style.opacity;
-                        if (oldOpacity < 1) {
-                            var newOpacity = Math.floor((oldOpacity)*10 + 1)/10 ;
-                            cell.style.opacity = newOpacity;
-                            console.log(`old opacity was ${oldOpacity} and new opacity is ${newOpacity}`);
-                        } else {
-                            console.log('opacity is at its max (' + oldOpacity + ')');
-                        }
+                        //igual lo que tendrias que hacer aqui es separar los dos casos
+                        //el caso en que el color sea el por defecto (lightgray)
+                        //en este caso, simplemente lo cambias por uno en formato hsl
+                        //((este paso te lo podrias zampar si en una futura version directamente añades un color hsl por defecto))
+                        var newColor = random_hsl();
+                        cell.style.backgroundColor = newColor;
 
+                        //y el caso en que el color sea un color en formato HSL
+                        //en cuyo caso tienes que conseguir la informacion de la L
+                        //si es > 0, restarle 10
+                        //y recomponer el string del color para volver a darselo
+                        //o sea obtienes el string
+                        //obtienes la L del string
+                        //consigues la nueva L
+                        //y recompones el string sustituyedno la vieja L por la nueva
+                        colorLightness = +newColor.substr(-5, 3);
+                        console.log (colorLightness);
+                        
+                        if (colorLightness > 0) {
+                            colorLightness = colorLightness -10;
+                            console.log('new lightness is ' + colorLightness)
+                        }
+                        
                     })
                 }
             }
@@ -83,11 +96,9 @@
             grid.style.height = `${25 * gridLenght}px`;
         }
 
-        function random_rgba() {
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            return `rgba(${r}, ${g}, ${b})`
+        function random_hsl() {
+            var h = Math.floor(Math.random() * 255);
+            return `hsl(${h}, 100%, 100%)`
         }
 
 
