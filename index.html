@@ -45,13 +45,14 @@
         function updateGrid() {
             console.log("updateGrid was called");
             if (newGridLenght > 0) {
-                console.log("newGridLenght > 0 is true");
-                console.log(`original grid lenght was ${gridLenght}`);
-                gridLenght = newGridLenght;
-                createGrid();
-                console.log(`new grid lenght is ${gridLenght}`);
+                if (newGridLenght > 100) {
+                    alert("that's too much! must be an integer below 100")
+                } else {
+                    gridLenght = newGridLenght;
+                    createGrid();
+                }
             } else {
-                console.log(`newGridLenght is ${newGridLenght}`);
+                alert("grid lenght input must be an integer between 1 and 99")
             }
         }
 
@@ -61,15 +62,32 @@
                 for (let j = 0; j < gridLenght; j++) {
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
+                    cell.style.opacity = 0.1;
                     grid.appendChild(cell);
 
                     cell.addEventListener("mouseover", function (e) {
-                        cell.style.backgroundColor = "blue";
+                        cell.style.backgroundColor = random_rgba();
+                        var oldOpacity = +cell.style.opacity;
+                        if (oldOpacity < 1) {
+                            var newOpacity = Math.floor((oldOpacity)*10 + 1)/10 ;
+                            cell.style.opacity = newOpacity;
+                            console.log(`old opacity was ${oldOpacity} and new opacity is ${newOpacity}`);
+                        } else {
+                            console.log('opacity is at its max (' + oldOpacity + ')');
+                        }
+
                     })
                 }
             }
-            grid.style.width = `${25*gridLenght}px`;
-            grid.style.height = `${25*gridLenght}px`;
+            grid.style.width = `${25 * gridLenght}px`;
+            grid.style.height = `${25 * gridLenght}px`;
+        }
+
+        function random_rgba() {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b})`
         }
 
 
