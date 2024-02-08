@@ -69,6 +69,7 @@
 
                         if (typeof a === "string" && a.length === 0) {
                             var newColor = random_hsl();
+                            //aquí añadas la S y la L
                             cell.style.backgroundColor = newColor;
 
                         } else {
@@ -85,6 +86,7 @@
                             let colorHSL = oldColorHSL.toString().split(',');
 
                             if (colorHSL[2] > 0) {
+                                //para que aquíi puedas darle otro H, que era tu objetivo inicial
                                 let newColor = `hsl(${Math.round(colorHSL[0])}, ${Math.round(colorHSL[1])}%, ${Math.round(colorHSL[2]) - 5}%)`;
                                 cell.style.backgroundColor = newColor;
                             } 
@@ -99,6 +101,8 @@
         function random_hsl() {
             var h = Math.floor(Math.random() * 360);
             return `hsl(${h}, 100%, 50%)`
+            //molaría igual que esta función sólo randomice la H y luego la S y la L se la añadas arriba
+
         }
 
         const RGBToHSL = (r, g, b) => {
