@@ -69,20 +69,16 @@
 
                         if (typeof a === "string" && a.length === 0) {
                             var newColor = random_hsl();
-                            console.log("FASE 1 completed, newColor is " + newColor);
                             cell.style.backgroundColor = newColor;
 
                         } else {
-                            let oldColor = cell.style.backgroundColor
-                            console.log('FASE 2 started');
+                            let oldColorRGB = cell.style.backgroundColor;
 
-                            let r1 = oldColor.split('(');
-                            let r2 = r1[1].split(',');
-
-                            let oldR = r2[0].trim();
-                            let oldG = r2[1].trim();
-                            let oldB_ = r2[2];
-                            let oldB = oldB_.slice(0, -1).trim();
+                            let colorRGB = oldColorRGB.split('(')[1].split(',');
+                            
+                            let oldR = colorRGB[0].trim();
+                            let oldG = colorRGB[1].trim();
+                            let oldB = colorRGB[2].slice(0, -1).trim();
 
                             let oldColorHSL = RGBToHSL(oldR, oldG, oldB);
 
@@ -90,14 +86,9 @@
 
                             if (colorHSL[2] > 0) {
                                 let newColor = `hsl(${Math.round(colorHSL[0])}, ${Math.round(colorHSL[1])}%, ${Math.round(colorHSL[2]) - 5}%)`;
-                                console.log(`newColor is ${newColor}`);
                                 cell.style.backgroundColor = newColor;
-                            } else {
-                                console.log(`oldColor is already dark enough!!! ${colorHSL}`)
-                            }
+                            } 
                         }
-
-
                     })
                 }
             }
@@ -107,7 +98,6 @@
 
         function random_hsl() {
             var h = Math.floor(Math.random() * 360);
-            console.log(h);
             return `hsl(${h}, 100%, 50%)`
         }
 
