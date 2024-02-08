@@ -83,18 +83,18 @@
                             let oldG = r2[1].trim();
                             let oldB_ = r2[2];
                             let oldB = oldB_.slice(0, -1).trim();
-                            
-                            let oldColorHSL = rgbToHsl(oldR, oldG, oldB);
-                            console.log('oldColor translated to HSL value is' + oldColorHSL);
 
+                            let oldColorHSL = RGBToHSL(oldR, oldG, oldB);
 
-                            let newColor = `hsl(${oldR}, ${oldG}%, ${oldB - 10}%)`
-                            //!! claro es que estás importando valores RGB y llamandolos HSL
-                            //por eso no te funciona
-                            //tienes que traducirlos a HSL y luego bajarle la L
+                            let colorHSL = oldColorHSL.toString().split(',');
 
-                            console.log('newColor is ' + newColor);
-
+                            if (colorHSL[2] > 0) {
+                                let newColor = `hsl(${Math.round(colorHSL[0])}, ${Math.round(colorHSL[1])}%, ${Math.round(colorHSL[2]) - 5}%)`;
+                                console.log(`newColor is ${newColor}`);
+                                cell.style.backgroundColor = newColor;
+                            } else {
+                                console.log(`oldColor is already dark enough!!! ${colorHSL}`)
+                            }
                         }
 
 
@@ -106,34 +106,30 @@
         }
 
         function random_hsl() {
-            var h = Math.floor(Math.random() * 255);
+            var h = Math.floor(Math.random() * 360);
             console.log(h);
             return `hsl(${h}, 100%, 50%)`
         }
 
-        function rgbToHsl(r, g, b) {
-            r /= 255, g /= 255, b /= 255;
-
-            var max = Math.max(r, g, b), min = Math.min(r, g, b);
-            var h, s, l = (max + min) / 2;
-
-            if (max == min) {
-                h = s = 0; // achromatic
-            } else {
-                var d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-                switch (max) {
-                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                    case g: h = (b - r) / d + 2; break;
-                    case b: h = (r - g) / d + 4; break;
-                }
-
-                h /= 6;
-            }
-
-            return [h, s, l];
-        }
+        const RGBToHSL = (r, g, b) => {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            const l = Math.max(r, g, b);
+            const s = l - Math.min(r, g, b);
+            const h = s
+                ? l === r
+                    ? (g - b) / s
+                    : l === g
+                        ? 2 + (b - r) / s
+                        : 4 + (r - g) / s
+                : 0;
+            return [
+                60 * h < 0 ? 60 * h + 360 : 60 * h,
+                100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+                (100 * (2 * l - s)) / 2,
+            ];
+        };
 
 
     </script>
