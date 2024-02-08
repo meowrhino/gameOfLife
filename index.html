@@ -74,49 +74,30 @@
 
                         } else {
                             let oldColor = cell.style.backgroundColor
-                            console.log('oldColor is ' + oldColor);
-
-                            if (oldColor === 'rgb(255, 255, 255)') {
-                                console.log('FASE 2');
-
-                                let newColor = random_hsl();
-                                cell.style.backgroundColor = newColor;
-
-                            }
+                            console.log('FASE 2 started');
 
                             let r1 = oldColor.split('(');
                             let r2 = r1[1].split(',');
 
-                            let oldR = r2[0];
-                            let oldG = r2[1];
+                            let oldR = r2[0].trim();
+                            let oldG = r2[1].trim();
                             let oldB_ = r2[2];
-                            let oldB = oldB_.slice(0, -1);
+                            let oldB = oldB_.slice(0, -1).trim();
+                            
+                            let oldColorHSL = rgbToHsl(oldR, oldG, oldB);
+                            console.log('oldColor translated to HSL value is' + oldColorHSL);
 
-                            let testHSL = rgbToHsl(oldR, oldG, oldB);
 
-                            let newColor = `hsl(${testHSL[0]}, ${testHSL[1]}%, ${testHSL[2]}%)`
+                            let newColor = `hsl(${oldR}, ${oldG}%, ${oldB - 10}%)`
+                            //!! claro es que estás importando valores RGB y llamandolos HSL
+                            //por eso no te funciona
+                            //tienes que traducirlos a HSL y luego bajarle la L
 
-                            console.log(newColor);
-                            cell.style.backgroundColor = newColor;
+                            console.log('newColor is ' + newColor);
+
                         }
 
 
-                        //y el caso en que el color sea un color en formato HSL
-                        //en cuyo caso tienes que conseguir la informacion de la L
-                        //si es > 0, restarle 10
-                        //y recomponer el string del color para volver a darselo
-                        //o sea obtienes el string
-                        //obtienes la L del string
-                        //consigues la nueva L
-                        //y recompones el string sustituyedno la vieja L por la nueva
-                        /*colorLightness = +newColor.substr(-5, 3);
-                        console.log(colorLightness);
-
-                        if (colorLightness > 0) {
-                            colorLightness = colorLightness - 10;
-                            console.log('new lightness is ' + colorLightness)
-                        }
-                        */
                     })
                 }
             }
@@ -129,14 +110,6 @@
             console.log(h);
             return `hsl(${h}, 100%, 50%)`
         }
-        /*
-        function get_random_color() {
-            var h = rand(1, 360);
-            var s = rand(0, 100);
-            var l = rand(0, 100);
-            return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-        }
-        */
 
         function rgbToHsl(r, g, b) {
             r /= 255, g /= 255, b /= 255;
