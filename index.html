@@ -66,12 +66,32 @@
                     grid.appendChild(cell);
 
                     cell.addEventListener("mouseover", function (e) {
-                        //igual lo que tendrias que hacer aqui es separar los dos casos
-                        //el caso en que el color sea el por defecto (lightgray)
-                        //en este caso, simplemente lo cambias por uno en formato hsl
-                        //((este paso te lo podrias zampar si en una futura version directamente añades un color hsl por defecto))
-                        var newColor = random_hsl();
-                        cell.style.backgroundColor = newColor;
+                        var a = cell.style.backgroundColor;
+
+                        if (typeof a === "string" && a.length === 0) {
+                            console.log("The string is empty");
+                            var newColor = random_hsl();
+                            cell.style.backgroundColor = newColor;
+                        } else {
+                            let oldColor = cell.style.backgroundColor
+                            console.log(oldColor);
+
+                            let r1 = oldColor.split('(');
+                            let r2 = r1[1].split(',');
+
+                            let oldR = r2[0];
+                            let oldG = r2[1];
+                            let oldB_ = r2[2];
+                            let oldB = oldB_.slice(0, -1);
+                            
+                            let testHSL = rgbToHsl(oldR, oldG, oldB);
+                            
+                            let newColor = `hsl(${testHSL[0]}, ${testHSL[1]}%, ${testHSL[2]}%)` 
+                            
+                            console.log(newColor);
+                            cell.style.backgroundColor = newColor;
+                        }
+
 
                         //y el caso en que el color sea un color en formato HSL
                         //en cuyo caso tienes que conseguir la informacion de la L
@@ -81,14 +101,14 @@
                         //obtienes la L del string
                         //consigues la nueva L
                         //y recompones el string sustituyedno la vieja L por la nueva
-                        colorLightness = +newColor.substr(-5, 3);
-                        console.log (colorLightness);
-                        
+                        /*colorLightness = +newColor.substr(-5, 3);
+                        console.log(colorLightness);
+
                         if (colorLightness > 0) {
-                            colorLightness = colorLightness -10;
+                            colorLightness = colorLightness - 10;
                             console.log('new lightness is ' + colorLightness)
                         }
-                        
+                        */
                     })
                 }
             }
@@ -99,6 +119,31 @@
         function random_hsl() {
             var h = Math.floor(Math.random() * 255);
             return `hsl(${h}, 100%, 100%)`
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255, g /= 255, b /= 255;
+            console.log(b);
+
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var h, s, l = (max + min) / 2;
+
+            if (max == min) {
+                h = s = 0; // achromatic
+            } else {
+                var d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+
+                h /= 6;
+            }
+
+            return [h, s, l];
         }
 
 
