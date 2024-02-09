@@ -32,9 +32,7 @@
 
         let gridLenght = 16;
         createGrid();
-        let newGridLenght = 0;
-
-
+        let newGridLenght;
 
         const button = document.createElement('button');
         button.classList.add('gridLenghtInput');
@@ -43,7 +41,7 @@
         container.appendChild(button);
 
         function updateGrid() {
-            console.log("updateGrid was called");
+            //es la función que se dispara si quieres modificar el size de la grid
             if (newGridLenght > 0) {
                 if (newGridLenght > 100) {
                     alert("that's too much! must be an integer below 100")
@@ -68,44 +66,43 @@
                         var a = cell.style.backgroundColor;
 
                         if (typeof a === "string" && a.length === 0) {
-                            var newColor = random_hsl();
-                            //aquí añadas la S y la L
+                            //si no tiene color asignado, le asignas un color random de H,
+                            //le das 100% de Saturation y 50% de Lightness
+                            var newColor = random_hsl(100, 50);
                             cell.style.backgroundColor = newColor;
 
                         } else {
+                            //si ya tiene color, tienes que conseguir saber cual es
+                            //para eso consigues el color (los metodos split te dan arrays de info)
                             let oldColorRGB = cell.style.backgroundColor;
-
                             let colorRGB = oldColorRGB.split('(')[1].split(',');
-                            
-                            let oldR = colorRGB[0].trim();
-                            let oldG = colorRGB[1].trim();
-                            let oldB = colorRGB[2].slice(0, -1).trim();
 
-                            let oldColorHSL = RGBToHSL(oldR, oldG, oldB);
-
+                            //y lo conviertes en HSL (los metodos trim te eliminan el espacio en blanco del string)
+                            let oldColorHSL = RGBToHSL(colorRGB[0].trim(), colorRGB[1].trim(), colorRGB[2].slice(0, -1).trim());
                             let colorHSL = oldColorHSL.toString().split(',');
 
+                            //y si se puede oscurecer, se oscurece, (el item 2 del array colorHSL, es la L (H es 0, S es 1))
                             if (colorHSL[2] > 0) {
-                                //para que aquíi puedas darle otro H, que era tu objetivo inicial
-                                let newColor = `hsl(${Math.round(colorHSL[0])}, ${Math.round(colorHSL[1])}%, ${Math.round(colorHSL[2]) - 5}%)`;
+                                let newColor = random_hsl(Math.round(colorHSL[1]), (Math.round(colorHSL[2]) - 5));
                                 cell.style.backgroundColor = newColor;
-                            } 
+                            } //si es negro, se queda negro, por eso no hay else porque no hay que reasignar nada
                         }
                     })
                 }
             }
             grid.style.width = `${25 * gridLenght}px`;
             grid.style.height = `${25 * gridLenght}px`;
+            //esto es para asegurar que en el grid van a caber todas las casillas que acepte como parámetro el updategrid
         }
 
-        function random_hsl() {
+        function random_hsl(s, l) {
+            //está hecho así para que solo randomice la H en verdad
             var h = Math.floor(Math.random() * 360);
-            return `hsl(${h}, 100%, 50%)`
-            //molaría igual que esta función sólo randomice la H y luego la S y la L se la añadas arriba
-
+            return `hsl(${h}, ${s}%, ${l}%)`
         }
 
         const RGBToHSL = (r, g, b) => {
+            //ni pta idea de cómo funciona ésto, lo saqué de internet
             r /= 255;
             g /= 255;
             b /= 255;
