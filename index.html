@@ -4,123 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
+    <title>etchASketch</title>
+
     <style>
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
+        .yellow {
+            background-color: yellow;
         }
 
-        .cell {
-            width: 25px;
-            height: 25px;
-            background-color: lightgray;
+        .gray {
+            background-color: gray;
         }
     </style>
-    <title>Etch a Sketch</title>
 </head>
 
 <body>
-    <div class="container">
-        <div class="grid"></div>
-    </div>
-
 
     <script>
-        const container = document.querySelector(".container");
-        const grid = document.querySelector(".grid");
 
-        let gridLenght = 16;
-        createGrid();
-        let newGridLenght;
+        for (let i = 0; i < 16; i++) {
 
-        const button = document.createElement('button');
-        button.classList.add('gridLenghtInput');
-        button.textContent = "change grid size";
-        button.onclick = function () { newGridLenght = +prompt("how much definition would u like?"); console.log(newGridLenght); updateGrid(); };
-        container.appendChild(button);
+            /*generamos las rows donde irán los cuadrados, que han de ser flex para que se pongan los cuadrados en linea uno tras otro*/
+            let rowDiv = document.createElement("div");
+            rowDiv.style.display = "flex";
 
-        function updateGrid() {
-            //es la función que se dispara si quieres modificar el size de la grid
-            if (newGridLenght > 0) {
-                if (newGridLenght > 100) {
-                    alert("that's too much! must be an integer below 100")
-                } else {
-                    gridLenght = newGridLenght;
-                    createGrid();
-                }
-            } else {
-                alert("grid lenght input must be an integer between 1 and 99")
+
+            for (let j = 0; j < 16; j++) {
+
+                /*y creamos los cuadrados, que por defecto serán grises*/
+                let squareDiv = document.createElement("div");
+                squareDiv.style.height = "25px";
+                squareDiv.style.width = "25px";
+                /*squareDiv.style.background = "gray";*/
+                squareDiv.classList.add("gray");
+                
+                /*pero si les pasa el cursor por encima se convertirán en amarillos*/
+                squareDiv.addEventListener('mouseover', () => {
+                    /*squareDiv.style.background = "yellow";*/
+                    squareDiv.classList.remove("gray");
+                    squareDiv.classList.add("yellow");
+                });
+
+                /*y cuando el cursor se vaya, volverán a ser grises*/    
+                squareDiv.addEventListener('mouseout', () => {
+                    /*squareDiv.style.background = "darkgray";*/
+                    squareDiv.classList.remove("yellow");
+                    squareDiv.classList.add("gray");
+                });
+
+                rowDiv.appendChild(squareDiv)
             }
+
+            document.body.appendChild(rowDiv);
         }
 
-        function createGrid() {
-            grid.innerHTML = '';
-            for (let i = 0; i < gridLenght; i++) {
-                for (let j = 0; j < gridLenght; j++) {
-                    const cell = document.createElement('div');
-                    cell.classList.add('cell');
-                    grid.appendChild(cell);
 
-                    cell.addEventListener("mouseover", function (e) {
-                        var a = cell.style.backgroundColor;
+    </script>
 
-                        if (typeof a === "string" && a.length === 0) {
-                            //si no tiene color asignado, le asignas un color random de H,
-                            //le das 100% de Saturation y 50% de Lightness
-                            var newColor = random_hsl(100, 50);
-                            cell.style.backgroundColor = newColor;
-
-                        } else {
-                            //si ya tiene color, tienes que conseguir saber cual es
-                            //para eso consigues el color (los metodos split te dan arrays de info)
-                            let oldColorRGB = cell.style.backgroundColor;
-                            let colorRGB = oldColorRGB.split('(')[1].split(',');
-
-                            //y lo conviertes en HSL (los metodos trim te eliminan el espacio en blanco del string)
-                            let oldColorHSL = RGBToHSL(colorRGB[0].trim(), colorRGB[1].trim(), colorRGB[2].slice(0, -1).trim());
-                            let colorHSL = oldColorHSL.toString().split(',');
-
-                            //y si se puede oscurecer, se oscurece, (el item 2 del array colorHSL, es la L (H es 0, S es 1))
-                            if (colorHSL[2] > 0) {
-                                let newColor = random_hsl(Math.round(colorHSL[1]), (Math.round(colorHSL[2]) - 5));
-                                cell.style.backgroundColor = newColor;
-                            } //si es negro, se queda negro, por eso no hay else porque no hay que reasignar nada
-                        }
-                    })
-                }
-            }
-            grid.style.width = `${25 * gridLenght}px`;
-            grid.style.height = `${25 * gridLenght}px`;
-            //esto es para asegurar que en el grid van a caber todas las casillas que acepte como parámetro el updategrid
-        }
-
-        function random_hsl(s, l) {
-            //está hecho así para que solo randomice la H en verdad
-            var h = Math.floor(Math.random() * 360);
-            return `hsl(${h}, ${s}%, ${l}%)`
-        }
-
-        const RGBToHSL = (r, g, b) => {
-            //ni pta idea de cómo funciona ésto, lo saqué de internet
-            r /= 255;
-            g /= 255;
-            b /= 255;
-            const l = Math.max(r, g, b);
-            const s = l - Math.min(r, g, b);
-            const h = s
-                ? l === r
-                    ? (g - b) / s
-                    : l === g
-                        ? 2 + (b - r) / s
-                        : 4 + (r - g) / s
-                : 0;
-            return [
-                60 * h < 0 ? 60 * h + 360 : 60 * h,
-                100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
-                (100 * (2 * l - s)) / 2,
-            ];
-        };
+<!--script para que no se vea el cursor-->
+    <script type="text/javascript">
+        document.body.style.cursor = 'none';
     </script>
 
 </body>
