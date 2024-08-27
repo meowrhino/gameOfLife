@@ -21,14 +21,24 @@
 
     <script>
 
-        for (let i = 0; i < 16; i++) {
+        let numberOfSquares = 16;
+
+        let numberOfSquaresBtn = document.createElement("button");
+        numberOfSquaresBtn.textContent = 'change number of squares per side';
+        numberOfSquaresBtn.addEventListener('click', () => {
+            numberOfSquares = prompt("what number of squares per side would you like?");
+        });
+
+        document.body.appendChild(numberOfSquaresBtn);  
+
+        for (let i = 0; i < numberOfSquares; i++) {
 
             /*generamos las rows donde irán los cuadrados, que han de ser flex para que se pongan los cuadrados en linea uno tras otro*/
             let rowDiv = document.createElement("div");
             rowDiv.style.display = "flex";
 
 
-            for (let j = 0; j < 16; j++) {
+            for (let j = 0; j < numberOfSquares; j++) {
 
                 /*y creamos los cuadrados, que por defecto serán grises*/
                 let squareDiv = document.createElement("div");
@@ -36,7 +46,7 @@
                 squareDiv.style.width = "25px";
                 /*squareDiv.style.background = "gray";*/
                 squareDiv.classList.add("gray");
-                
+
                 /*pero si les pasa el cursor por encima se convertirán en amarillos*/
                 squareDiv.addEventListener('mouseover', () => {
                     /*squareDiv.style.background = "yellow";*/
@@ -44,7 +54,7 @@
                     squareDiv.classList.add("yellow");
                 });
 
-                /*y cuando el cursor se vaya, volverán a ser grises*/    
+                /*y cuando el cursor se vaya, volverán a ser grises*/
                 squareDiv.addEventListener('mouseout', () => {
                     /*squareDiv.style.background = "darkgray";*/
                     squareDiv.classList.remove("yellow");
@@ -60,7 +70,7 @@
 
     </script>
 
-<!--script para que no se vea el cursor-->
+    <!--script para que no se vea el cursor-->
     <script type="text/javascript">
         document.body.style.cursor = 'none';
     </script>
