@@ -23,6 +23,10 @@
             background-color: lightgray;
         }
 
+        .closeToCursed {
+            background-color: darkslategray;
+        }
+
         .cursedClicked {
             background-color: red;
         }
@@ -54,7 +58,6 @@
 <body>
     <div class="container">
         <div class="etchASketch">
-
         </div>
 
         <button class="gridLenghtBtn">
@@ -63,15 +66,9 @@
     </div>
 
     <script>
-
         const container = document.querySelector(".container");
         const etchASketch = document.querySelector(".etchASketch");
-
-        let gridLenght = 16;
-        createGrid();
-        let newgridLenght;
-
-        let gridLenghtBtn = document.querySelector(".gridLenghtBtn");
+        const gridLenghtBtn = document.querySelector(".gridLenghtBtn");
 
         gridLenghtBtn.addEventListener('click', () => {
             gridLenght = +prompt("what number of squares per side would you like?");
@@ -79,7 +76,8 @@
             updateGrid();
         });
 
-        //get the etchASketch width / height (you only need one bc its a square (for now))
+        let gridLenght = 16;
+        createGrid();
 
         function updateGrid() {
 
@@ -103,6 +101,7 @@
 
                 /*generamos las rows donde irán los cuadrados, que han de ser flex para que se pongan los cuadrados en linea uno tras otro*/
                 let rowDiv = document.createElement("div");
+                rowDiv.id = `row${i}`;
                 rowDiv.style.display = "flex";
 
 
@@ -122,10 +121,13 @@
 
                     /*pero si les pasa el cursor por encima se convertirán en amarillos*/
                     squareDiv.addEventListener('mouseover', () => {
-                        squareDiv.classList.remove("gray");
+                        if (squareDiv.classList.contains("gray")) {
+                            squareDiv.classList.remove("gray");
+                        }
                         squareDiv.classList.add("yellow");
                     });
 
+                    /*y si se les hace click se ponen verde o rojos, segun esten cursed o no*/
                     squareDiv.addEventListener('click', () => {
 
                         if (squareDiv.classList.contains("cursed")) {
@@ -155,17 +157,84 @@
                 etchASketch.appendChild(rowDiv);
             }
 
-            const cursedSquare = document.getElementById(curseSquares(gridLenght));
+            const cursedSquareId = curseSquares(gridLenght);
+            const cursedSquare = document.getElementById(cursedSquareId);
+            console.log(`cursed square was square number ${cursedSquareId}`);
+
+            markNearSquares(cursedSquareId);
+
             cursedSquare.classList.remove("gray");
             cursedSquare.classList.add("cursed");
-            console.log(cursedSquare);
         }
 
         function curseSquares(gridLenght) {
             const totalSquares = gridLenght * gridLenght;
-            const cursedSquare = randomNumber(0,totalSquares);
-            console.log(`cursed square is square number ${cursedSquare}`);
+            const cursedSquare = randomNumber(0, totalSquares);
             return cursedSquare;
+        }
+
+        function markNearSquares(cursedSquareId) {
+
+            const squareAboveId = cursedSquareId - 16;
+            if (squareAboveId > 0) {
+                const squareAbove = document.getElementById(squareAboveId);
+                squareAbove.classList.remove("gray");
+                squareAbove.classList.add("closeToCursed");
+
+                /*y el cuadrado de la esquina arriba izquierda*/
+                const squareDiagonal1Id = squareAboveId - 1;
+                const squareDiagonal1 = document.getElementById(squareDiagonal1Id);
+                squareDiagonal1.classList.remove("gray");
+                squareDiagonal1.classList.add("closeToCursed");
+
+                /*y el cuadrado de la esquina arriba derecha*/
+                const squareDiagonal2Id = squareAboveId + 1;
+                const squareDiagonal2 = document.getElementById(squareDiagonal2Id);
+                squareDiagonal2.classList.remove("gray");
+                squareDiagonal2.classList.add("closeToCursed");
+
+            }
+
+            const squareBelowId = cursedSquareId + 16;
+            if (squareBelowId < gridLenght * gridLenght) {
+                const squareBelow = document.getElementById(squareBelowId);
+                squareBelow.classList.remove("gray");
+                squareBelow.classList.add("closeToCursed");
+
+                /*y el cuadrado de la esquina abajo izquierda*/
+                const squareDiagonal3Id = squareBelowId - 1;
+                const squareDiagonal3 = document.getElementById(squareDiagonal3Id);
+                squareDiagonal3.classList.remove("gray");
+                squareDiagonal3.classList.add("closeToCursed");
+
+                /*y el cuadrado de la esquina abajo derecha*/
+                const squareDiagonal4Id = squareBelowId + 1;
+                const squareDiagonal4 = document.getElementById(squareDiagonal4Id);
+                squareDiagonal4.classList.remove("gray");
+                squareDiagonal4.classList.add("closeToCursed");
+            }
+
+            const squareLeftToId = cursedSquareId - 1;
+            if (squareLeftToId < gridLenght * gridLenght) {
+                const squareLeftTo = document.getElementById(squareLeftToId);
+                squareLeftTo.classList.remove("gray");
+                squareLeftTo.classList.add("closeToCursed");
+            }
+
+            const squareRightToId = cursedSquareId + 1;
+            if (squareRightToId < gridLenght * gridLenght) {
+                const squareRightTo = document.getElementById(squareRightToId);
+                squareRightTo.classList.remove("gray");
+                squareRightTo.classList.add("closeToCursed");
+            }
+        }
+
+        function verifySameRow (cursedSquareRow, squareToCheckRow) {
+            if (cursedSquareRow === squareToCheckRow) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         function randomNumber(min, max) {
