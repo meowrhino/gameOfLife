@@ -14,65 +14,164 @@
         .gray {
             background-color: gray;
         }
+
+        .clicked {
+            background-color: greenyellow;
+        }
+
+        .cursed {
+            background-color: lightgray;
+        }
+
+        .cursedClicked {
+            background-color: red;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        html,
+        body,
+        .container {
+            height: 100%;
+        }
+
+        .etchASketch {
+            cursor: none;
+            width: 800px;
+            height: 800px;
+
+            background-color: blue;
+        }
     </style>
 </head>
 
 <body>
+    <div class="container">
+        <div class="etchASketch">
+
+        </div>
+
+        <button class="gridLenghtBtn">
+            change number of squares per side
+        </button>
+    </div>
 
     <script>
 
-        let numberOfSquares = 16;
+        const container = document.querySelector(".container");
+        const etchASketch = document.querySelector(".etchASketch");
 
-        let numberOfSquaresBtn = document.createElement("button");
-        numberOfSquaresBtn.textContent = 'change number of squares per side';
-        numberOfSquaresBtn.addEventListener('click', () => {
-            numberOfSquares = prompt("what number of squares per side would you like?");
+        let gridLenght = 16;
+        createGrid();
+        let newgridLenght;
+
+        let gridLenghtBtn = document.querySelector(".gridLenghtBtn");
+
+        gridLenghtBtn.addEventListener('click', () => {
+            gridLenght = +prompt("what number of squares per side would you like?");
+            console.log(gridLenght);
+            updateGrid();
         });
 
-        document.body.appendChild(numberOfSquaresBtn);  
+        //get the etchASketch width / height (you only need one bc its a square (for now))
 
-        for (let i = 0; i < numberOfSquares; i++) {
+        function updateGrid() {
 
-            /*generamos las rows donde irán los cuadrados, que han de ser flex para que se pongan los cuadrados en linea uno tras otro*/
-            let rowDiv = document.createElement("div");
-            rowDiv.style.display = "flex";
-
-
-            for (let j = 0; j < numberOfSquares; j++) {
-
-                /*y creamos los cuadrados, que por defecto serán grises*/
-                let squareDiv = document.createElement("div");
-                squareDiv.style.height = "25px";
-                squareDiv.style.width = "25px";
-                /*squareDiv.style.background = "gray";*/
-                squareDiv.classList.add("gray");
-
-                /*pero si les pasa el cursor por encima se convertirán en amarillos*/
-                squareDiv.addEventListener('mouseover', () => {
-                    /*squareDiv.style.background = "yellow";*/
-                    squareDiv.classList.remove("gray");
-                    squareDiv.classList.add("yellow");
-                });
-
-                /*y cuando el cursor se vaya, volverán a ser grises*/
-                squareDiv.addEventListener('mouseout', () => {
-                    /*squareDiv.style.background = "darkgray";*/
-                    squareDiv.classList.remove("yellow");
-                    squareDiv.classList.add("gray");
-                });
-
-                rowDiv.appendChild(squareDiv)
+            if (gridLenght > 0) {
+                if (gridLenght > 100) {
+                    alert("that's too much! must be an integer below 100")
+                } else {
+                    gridLenght = gridLenght;
+                    createGrid();
+                }
+            } else {
+                alert("grid lenght input must be an integer between 1 and 99")
             }
-
-            document.body.appendChild(rowDiv);
         }
 
+        function createGrid() {
 
-    </script>
+            etchASketch.innerHTML = '';
 
-    <!--script para que no se vea el cursor-->
-    <script type="text/javascript">
-        document.body.style.cursor = 'none';
+            for (let i = 0; i < gridLenght; i++) {
+
+                /*generamos las rows donde irán los cuadrados, que han de ser flex para que se pongan los cuadrados en linea uno tras otro*/
+                let rowDiv = document.createElement("div");
+                rowDiv.style.display = "flex";
+
+
+                for (let j = 0; j < gridLenght; j++) {
+
+                    /*y creamos los cuadrados, que por defecto serán grises*/
+                    let squareDiv = document.createElement("div");
+                    squareDiv.classList.add("gray");
+
+                    /*calculamos cómo de grande han de ser*/
+                    const sizeOfSquare = etchASketchWidth = etchASketch.offsetWidth / gridLenght;
+                    squareDiv.style.height = `${sizeOfSquare}px`;
+                    squareDiv.style.width = `${sizeOfSquare}px`;
+
+                    /*y les damos un ID a cada uno (para más tarde hacer algunos bomba)*/
+                    squareDiv.id = i * 16 + j;
+
+                    /*pero si les pasa el cursor por encima se convertirán en amarillos*/
+                    squareDiv.addEventListener('mouseover', () => {
+                        squareDiv.classList.remove("gray");
+                        squareDiv.classList.add("yellow");
+                    });
+
+                    squareDiv.addEventListener('click', () => {
+
+                        if (squareDiv.classList.contains("cursed")) {
+
+                            squareDiv.classList.remove("cursed");
+                            squareDiv.classList.add("cursedClicked");
+                        }
+
+                        squareDiv.classList.remove("yellow");
+                        squareDiv.classList.add("clicked");
+                    });
+
+                    /*y cuando el cursor se vaya, volverán a ser grises*/
+                    squareDiv.addEventListener('mouseout', () => {
+                        if (squareDiv.classList.contains("clicked")) {
+
+                        } else {
+                            squareDiv.classList.remove("yellow");
+                            squareDiv.classList.add("gray");
+                        }
+
+                    });
+
+                    rowDiv.appendChild(squareDiv)
+                }
+
+                etchASketch.appendChild(rowDiv);
+            }
+
+            const cursedSquare = document.getElementById(curseSquares(gridLenght));
+            cursedSquare.classList.remove("gray");
+            cursedSquare.classList.add("cursed");
+            console.log(cursedSquare);
+        }
+
+        function curseSquares(gridLenght) {
+            const totalSquares = gridLenght * gridLenght;
+            const cursedSquare = randomNumber(0,totalSquares);
+            console.log(`cursed square is square number ${cursedSquare}`);
+            return cursedSquare;
+        }
+
+        function randomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+
     </script>
 
 </body>
