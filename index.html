@@ -11,7 +11,7 @@
             background-color: yellow;
         }
 
-        .gray {
+        .gray, .closeToCursed {
             background-color: gray;
         }
 
@@ -23,8 +23,8 @@
             background-color: lightgray;
         }
 
-        .closeToCursed {
-            background-color: darkslategray;
+        .orange {
+            background-color: orangered;
         }
 
         .cursedClicked {
@@ -47,10 +47,8 @@
 
         .etchASketch {
             cursor: none;
-            width: 800px;
-            height: 800px;
-
-            background-color: blue;
+            width: 600px;
+            height: 600px;
         }
     </style>
 </head>
@@ -123,8 +121,11 @@
                     squareDiv.addEventListener('mouseover', () => {
                         if (squareDiv.classList.contains("gray")) {
                             squareDiv.classList.remove("gray");
+                            squareDiv.classList.add("yellow");
+                        } else if (squareDiv.classList.contains("closeToCursed")){
+                            squareDiv.classList.remove("closeToCursed");
+                            squareDiv.classList.add("orange");
                         }
-                        squareDiv.classList.add("yellow");
                     });
 
                     /*y si se les hace click se ponen verde o rojos, segun esten cursed o no*/
@@ -157,16 +158,22 @@
                 etchASketch.appendChild(rowDiv);
             }
 
+            /*y ahora curseamos un square*/
             const cursedSquareId = curseSquares(gridLenght);
             const cursedSquare = document.getElementById(cursedSquareId);
             console.log(`cursed square was square number ${cursedSquareId}`);
-
-            markNearSquares(cursedSquareId);
-
             cursedSquare.classList.remove("gray");
             cursedSquare.classList.add("cursed");
+
+            /*y marcamos los cuadrados que lo rodean*/
+            markNearSquares(cursedSquareId);
+
         }
 
+        /*la función para marcar un cursed, 
+        creo que se ha de revisar porque a veces cuando introduces 
+        valores muy altos en plan 20 da un cursed square que queda fuera*/
+        
         function curseSquares(gridLenght) {
             const totalSquares = gridLenght * gridLenght;
             const cursedSquare = randomNumber(0, totalSquares);
@@ -175,7 +182,9 @@
 
         function markNearSquares(cursedSquareId) {
 
+            /*el cuadrado superior*/
             const squareAboveId = cursedSquareId - 16;
+            /*si el cuadrado cursed es el id 16 en un mapa de 16x16 se rompe!!!*/
             if (squareAboveId > 0) {
                 const squareAbove = document.getElementById(squareAboveId);
                 squareAbove.classList.remove("gray");
@@ -195,6 +204,7 @@
 
             }
 
+            /*el cuadrado inferior*/
             const squareBelowId = cursedSquareId + 16;
             if (squareBelowId < gridLenght * gridLenght) {
                 const squareBelow = document.getElementById(squareBelowId);
@@ -230,6 +240,10 @@
         }
 
         function verifySameRow (cursedSquareRow, squareToCheckRow) {
+
+            /*lo podrias hacer con el modulo??? en plan si %gridLength = 0 están en la columna del principio y si %gridLength = gridLenght -1 están en la columna del final*/
+
+            /*no sé qué sería mejor si calcular dónde está el cursed square y depende d edonde esté ver si marcar o no marcar segun cuales, o si cada vez que marquemos el left o right y los diagonales verificar que el modulo no es ninguna de las dos opciones (esto parece mas facil y si el de arriba o el de abajo caen en modulo 0 o modulo gridlenght-15 da igual porque se calculan de otra manera, los que dan problema son todos menos el de arriba y el de abajo*/
             if (cursedSquareRow === squareToCheckRow) {
                 return true;
             } else {
