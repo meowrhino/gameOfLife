@@ -11,7 +11,8 @@
             background-color: yellow;
         }
 
-        .gray, .closeToCursed {
+        .gray,
+        .closeToCursed {
             background-color: gray;
         }
 
@@ -74,7 +75,7 @@
             updateGrid();
         });
 
-        let gridLenght = 16;
+        let gridLenght = 8;
         createGrid();
 
         function updateGrid() {
@@ -114,15 +115,16 @@
                     squareDiv.style.height = `${sizeOfSquare}px`;
                     squareDiv.style.width = `${sizeOfSquare}px`;
 
-                    /*y les damos un ID a cada uno (para más tarde hacer algunos bomba)*/
-                    squareDiv.id = i * 16 + j;
+                    /*y les damos un ID a cada uno (para más tarde hacer algunos bomba)
+                    el id es su numero en la fila */
+                    squareDiv.id = i * gridLenght + j;
 
                     /*pero si les pasa el cursor por encima se convertirán en amarillos*/
                     squareDiv.addEventListener('mouseover', () => {
                         if (squareDiv.classList.contains("gray")) {
                             squareDiv.classList.remove("gray");
                             squareDiv.classList.add("yellow");
-                        } else if (squareDiv.classList.contains("closeToCursed")){
+                        } else if (squareDiv.classList.contains("closeToCursed")) {
                             squareDiv.classList.remove("closeToCursed");
                             squareDiv.classList.add("orange");
                         }
@@ -159,9 +161,11 @@
             }
 
             /*y ahora curseamos un square*/
-            const cursedSquareId = curseSquares(gridLenght);
+            /*DEBUGGEANDO*/
+            //const cursedSquareId = curseSquares(gridLenght);
+            const cursedSquareId = 31;
             const cursedSquare = document.getElementById(cursedSquareId);
-            console.log(`cursed square was square number ${cursedSquareId}`);
+            //console.log(`cursed square was square number ${cursedSquareId}`);
             cursedSquare.classList.remove("gray");
             cursedSquare.classList.add("cursed");
 
@@ -170,10 +174,6 @@
 
         }
 
-        /*la función para marcar un cursed, 
-        creo que se ha de revisar porque a veces cuando introduces 
-        valores muy altos en plan 20 da un cursed square que queda fuera*/
-        
         function curseSquares(gridLenght) {
             const totalSquares = gridLenght * gridLenght;
             const cursedSquare = randomNumber(0, totalSquares);
@@ -182,74 +182,148 @@
 
         function markNearSquares(cursedSquareId) {
 
-            /*el cuadrado superior*/
-            const squareAboveId = cursedSquareId - 16;
-            /*si el cuadrado cursed es el id 16 en un mapa de 16x16 se rompe!!!*/
+            /*el cuadrado superior y los del lado*/
+            const squareAboveId = cursedSquareId - gridLenght;
+            const squareDiagonal1Id = squareAboveId - 1;
+            const squareDiagonal2Id = squareAboveId + 1;
+
             if (squareAboveId > 0) {
                 const squareAbove = document.getElementById(squareAboveId);
                 squareAbove.classList.remove("gray");
                 squareAbove.classList.add("closeToCursed");
 
                 /*y el cuadrado de la esquina arriba izquierda*/
-                const squareDiagonal1Id = squareAboveId - 1;
-                const squareDiagonal1 = document.getElementById(squareDiagonal1Id);
-                squareDiagonal1.classList.remove("gray");
-                squareDiagonal1.classList.add("closeToCursed");
+                const checkSquareD1 = verifySquare(squareDiagonal1Id, cursedSquareId);
+                console.log('check square Diagonal 1' + checkSquareD1);
+
+                if (checkSquareD1 === 1 || checkSquareD1 === 2) {
+                    console.log("este cuadrado NO está en la misma línea que el de arriba del cursed");
+
+                    if (cursedSquareId % gridLenght === 1) {
+                        const squareDiagonal1 = document.getElementById(squareDiagonal1Id);
+                        squareDiagonal1.classList.remove("gray");
+                        squareDiagonal1.classList.add("closeToCursed");
+                    }
+                }
+
+                else {
+                    const squareDiagonal1 = document.getElementById(squareDiagonal1Id);
+                    squareDiagonal1.classList.remove("gray");
+                    squareDiagonal1.classList.add("closeToCursed");
+                }
 
                 /*y el cuadrado de la esquina arriba derecha*/
-                const squareDiagonal2Id = squareAboveId + 1;
                 const squareDiagonal2 = document.getElementById(squareDiagonal2Id);
                 squareDiagonal2.classList.remove("gray");
                 squareDiagonal2.classList.add("closeToCursed");
 
             }
 
-            /*el cuadrado inferior*/
-            const squareBelowId = cursedSquareId + 16;
+            /*el cuadrado inferior y los del lado*/
+            const squareBelowId = cursedSquareId + gridLenght;
+            const squareDiagonal3Id = squareBelowId - 1;
+            const squareDiagonal4Id = squareBelowId + 1;
+
             if (squareBelowId < gridLenght * gridLenght) {
                 const squareBelow = document.getElementById(squareBelowId);
                 squareBelow.classList.remove("gray");
                 squareBelow.classList.add("closeToCursed");
 
                 /*y el cuadrado de la esquina abajo izquierda*/
-                const squareDiagonal3Id = squareBelowId - 1;
-                const squareDiagonal3 = document.getElementById(squareDiagonal3Id);
-                squareDiagonal3.classList.remove("gray");
-                squareDiagonal3.classList.add("closeToCursed");
+                const checkSquareD3 = verifySquare(squareDiagonal3Id, cursedSquareId);
+                console.log('check square Diagonal 3 is ' + checkSquareD3);
+
+                if (checkSquareD3 === 1 || checkSquareD3 === 2) {
+                    console.log("este cuadrado NO está en la misma línea que el de arriba del cursed");
+
+                    if (cursedSquareId % gridLenght === 1) {
+                        const squareDiagonal3 = document.getElementById(squareDiagonal3Id);
+                        squareDiagonal3.classList.remove("gray");
+                        squareDiagonal3.classList.add("closeToCursed");
+                    }
+                }
+
+                else {
+                    const squareDiagonal3 = document.getElementById(squareDiagonal3Id);
+                    squareDiagonal3.classList.remove("gray");
+                    squareDiagonal3.classList.add("closeToCursed");
+                }
 
                 /*y el cuadrado de la esquina abajo derecha*/
-                const squareDiagonal4Id = squareBelowId + 1;
                 const squareDiagonal4 = document.getElementById(squareDiagonal4Id);
                 squareDiagonal4.classList.remove("gray");
                 squareDiagonal4.classList.add("closeToCursed");
             }
 
+            /*y el cuadrado a la izquierda*/
             const squareLeftToId = cursedSquareId - 1;
-            if (squareLeftToId < gridLenght * gridLenght) {
-                const squareLeftTo = document.getElementById(squareLeftToId);
-                squareLeftTo.classList.remove("gray");
-                squareLeftTo.classList.add("closeToCursed");
-            }
+            const checkSquareLeft = verifySquare(squareLeftToId, cursedSquareId);
+            console.log('check square left is ' + checkSquareLeft);
 
+            if (checkSquareLeft === 1 || checkSquareLeft === 2) {
+                    console.log("este cuadrado NO está en la misma línea que el de arriba del cursed");
+
+                    if (cursedSquareId % gridLenght === 1) {
+                        const squareLeft = document.getElementById(squareLeftToId);
+                        squareLeft.classList.remove("gray");
+                        squareLeft.classList.add("closeToCursed");
+                    }
+                }
+
+                else {
+                    const squareLeft = document.getElementById(squareLeftToId);
+                    squareLeft.classList.remove("gray");
+                    squareLeft.classList.add("closeToCursed");
+                }
+
+
+
+            /*y el cuadrado a la derecha*/
             const squareRightToId = cursedSquareId + 1;
             if (squareRightToId < gridLenght * gridLenght) {
                 const squareRightTo = document.getElementById(squareRightToId);
                 squareRightTo.classList.remove("gray");
                 squareRightTo.classList.add("closeToCursed");
+
+                /*y verificamos que no salte línea*/
+                //console.log(verifySquare(squareRightToId, cursedSquareId));
+
             }
+
+            //console.log(`${squareDiagonal1Id}, ${squareAboveId}, ${squareDiagonal2Id}`);
+            //console.log(`${squareLeftToId}, cursed, ${squareRightToId}`);
+            //console.log(`${squareDiagonal3Id}, ${squareBelowId}, ${squareDiagonal4Id}`);
+            //console.log('');
         }
 
-        function verifySameRow (cursedSquareRow, squareToCheckRow) {
+        function verifySquare(squareToCheckId, cursedSquareId) {
 
-            /*lo podrias hacer con el modulo??? en plan si %gridLength = 0 están en la columna del principio y si %gridLength = gridLenght -1 están en la columna del final*/
+            console.log('');
+            console.log(`verifySquare() was activated`);
+            console.log(`squareToCheckId is ${squareToCheckId} and cursedSquareId is ${cursedSquareId}`);
 
-            /*no sé qué sería mejor si calcular dónde está el cursed square y depende d edonde esté ver si marcar o no marcar segun cuales, o si cada vez que marquemos el left o right y los diagonales verificar que el modulo no es ninguna de las dos opciones (esto parece mas facil y si el de arriba o el de abajo caen en modulo 0 o modulo gridlenght-15 da igual porque se calculan de otra manera, los que dan problema son todos menos el de arriba y el de abajo*/
-            if (cursedSquareRow === squareToCheckRow) {
-                return true;
-            } else {
+            if (squareToCheckId % gridLenght == 0) {
+                console.log('square to check was found in first column');
+                return 1;
+            }
+            else if (squareToCheckId % gridLenght == gridLenght - 1) {
+                console.log('square to check was found in ultima column');
+                return 2;
+            }
+            else if (squareToCheckId % gridLenght == 1) {
+                console.log('square to check was found in second column');
+                return 3;
+            }
+            else if (squareToCheckId % gridLenght == gridLenght - 2) {
+                console.log('square to check was found in penultima column');
+                return 4;
+            }
+
+            else {
                 return false;
             }
         }
+
 
         function randomNumber(min, max) {
             return Math.floor(Math.random() * (max - min) + min);
