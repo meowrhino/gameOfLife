@@ -15,6 +15,7 @@ const saveButton = document.getElementById('save');
 const loadButton = document.getElementById('load');
 const generationDisplay = document.getElementById('generation');
 const liveCellsDisplay = document.getElementById('live-cells');
+const clearButton = document.getElementById('clear');
 
 let cells = new Map();
 let interval;
@@ -327,6 +328,13 @@ loadButton.addEventListener('click', () => {
     };
 
     input.click();
+});
+
+// Add event listener for the clear button
+clearButton.addEventListener('click', () => {
+    cells.forEach(cell => cell.classList.remove('alive'));
+    generation = 0;
+    updateStats();
 });
 
 grid.addEventListener('scroll', populateVisibleGrid);
