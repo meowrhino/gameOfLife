@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,10 +41,16 @@
         }
 
         .toggle-menu {
-            position: absolute;
-            top: 60px;
+            position: fixed;
+            top: 20px;
             left: 20px;
             z-index: 999;
+        }
+
+        #controlsContainer {
+            position: fixed;
+            width: 100%;
+            z-index: 998;
         }
 
         #controlsContainer.hidden {
@@ -58,6 +65,16 @@
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
+        }
+
+        #top-controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
 
         .control-group {
@@ -91,25 +108,6 @@
             background-color: #d6d6d6;
         }
 
-        h1 {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            margin: 0;
-            color: black;
-            font-size: 24px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        #random {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
         #stats {
             position: absolute;
             top: 10px;
@@ -121,44 +119,49 @@
             border: 1px solid #ccc;
         }
 
+
+        #bottom-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 20px;
+        }
+
+        .center-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         @media (max-width: 600px) {
             #controls {
                 position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                top: auto;
                 transform: none;
-                background: rgba(255,255,255,0.9);
+                background: rgba(255, 255, 255, 0.9);
                 padding: 10px;
                 justify-content: center;
                 z-index: 998;
             }
 
-            .toggle-menu {
-                position: fixed;
-                bottom: 70px;
-                right: 10px;
-                left: auto;
-                top: auto;
-                padding: 8px;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: rgba(0,0,0,0.7);
-                color: white;
-                font-size: 12px;
-                text-align: center;
+            #bottom-controls {
+                bottom: 0px;
             }
 
-            #random {
+            .toggle-menu {
                 position: fixed;
-                bottom: 70px;
-                left: 10px;
-                transform: none;
+                top: 20px;
+                left: 20px;
+                z-index: 999;
             }
 
             button {
@@ -170,36 +173,54 @@
                 margin: 5px;
             }
 
-            h1 {
-                font-size: 16px;
-                padding: 4px 8px;
-                z-index: 997;
-            }
-
             #stats {
                 font-size: 12px;
                 padding: 5px;
             }
-        }
 
-        #bottom-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            flex-wrap: wrap;
-        }
+            #bottom-controls {
+                position: fixed;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px;
+                margin: 0;
+            }
 
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+            .control-group {
+                width: auto;
+                margin: 5px 0;
+                align-items: center;
+            }
+
+            .control-group.left,
+            .control-group.right {
+                width: 80%;
+            }
+
+            .center-buttons {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin: 10px 0;
+            }
+
+            #speed {
+                width: 100%;
+            }
+
+            select#patterns {
+                width: 100%;
+            }
         }
     </style>
 </head>
-<body>
-    <h1>Juego de la Vida</h1>
 
+<body>
     <button id="toggleMenu" class="toggle-menu">⚙️</button>
 
     <div id="stats">
@@ -208,15 +229,25 @@
     <div id="grid"></div>
 
     <div id="controlsContainer">
-        <div id="controls">
+        <div id="top-controls">
             <button id="previous" class="secondary">Frame Anterior</button>
             <button id="start" class="primary">Iniciar Simulación</button>
             <button id="next" class="secondary">Frame Siguiente</button>
-            <div class="control-group">
+        </div>
+
+        <div id="bottom-controls">
+            <div class="control-group left">
                 <label for="speed">Velocidad:</label>
                 <input type="range" id="speed" min="100" max="2000" step="100" value="500">
             </div>
-            <div class="control-group">
+
+            <div class="center-buttons">
+                <button id="save" class="secondary">Guardar Estado</button>
+                <button id="random" class="secondary">Random Seed</button>
+                <button id="load" class="secondary">Cargar Estado</button>
+            </div>
+
+            <div class="control-group right">
                 <label for="patterns">Patrones:</label>
                 <select id="patterns">
                     <option value="single">Cuadrado Simple</option>
@@ -230,253 +261,10 @@
                     <option value="tub">Tubo</option>
                 </select>
             </div>
-            <button id="save" class="secondary">Guardar Estado</button>
-            <button id="load" class="secondary">Cargar Estado</button>
         </div>
     </div>
 
-    <button id="random" class="secondary">Random Seed</button>
-
-    <script>
-        const toggleButton = document.getElementById('toggleMenu');
-        const controlsContainer = document.getElementById('controlsContainer');
-        toggleButton.addEventListener('click', () => {
-            controlsContainer.classList.toggle('hidden');
-        });
-
-        const grid = document.getElementById('grid');
-        const startButton = document.getElementById('start');
-        const previousButton = document.getElementById('previous');
-        const nextButton = document.getElementById('next');
-        const randomButton = document.getElementById('random');
-        const speedControl = document.getElementById('speed');
-        const patternsSelect = document.getElementById('patterns');
-        const saveButton = document.getElementById('save');
-        const loadButton = document.getElementById('load');
-        const generationDisplay = document.getElementById('generation');
-        const liveCellsDisplay = document.getElementById('live-cells');
-
-        let cells = new Map();
-        let interval;
-        let history = [];
-        let generation = 0;
-
-        function createCell(row, col) {
-            const key = `${row},${col}`;
-            if (cells.has(key)) return cells.get(key);
-
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-            cell.style.transform = `translate(${col * 21}px, ${row * 21}px)`;
-            cell.dataset.row = row;
-            cell.dataset.col = col;
-
-            cell.addEventListener('click', () => {
-                const pattern = patternsSelect.value;
-                if (pattern === 'single') {
-                    cell.classList.toggle('alive');
-                } else {
-                    applyPattern(row, col, pattern);
-                }
-            });
-
-            grid.appendChild(cell);
-            cells.set(key, cell);
-            return cell;
-        }
-
-        function applyPattern(row, col, pattern) {
-            const patterns = {
-                single: [[0, 0]],
-                glider: [[0, 0], [1, 1], [2, -1], [2, 0], [2, 1]],
-                pulsar: [
-                    [-1, -2], [-1, -3], [-1, -4], [-2, -1], [-3, -1], [-4, -1],
-                    [1, 2], [1, 3], [1, 4], [2, 1], [3, 1], [4, 1],
-                    [1, -2], [1, -3], [1, -4], [2, -1], [3, -1], [4, -1],
-                    [-1, 2], [-1, 3], [-1, 4], [-2, 1], [-3, 1], [-4, 1]
-                ],
-                lwss: [[0, 1], [0, 4], [1, 0], [1, 4], [2, 4], [2, 0], [3, 1], [3, 2], [3, 3], [3, 4]],
-                block: [[0, 0], [0, 1], [1, 0], [1, 1]],
-                beehive: [[0, 1], [0, 2], [1, 0], [1, 3], [2, 1], [2, 2]],
-                loaf: [[0, 1], [0, 2], [1, 0], [1, 3], [2, 1], [2, 3], [3, 2]],
-                boat: [[0, 0], [0, 1], [1, 0], [1, 2], [2, 1]],
-                tub: [[0, 1], [1, 0], [1, 2], [2, 1]],
-            };
-
-            patterns[pattern].forEach(([dx, dy]) => {
-                const targetCell = createCell(row + dx, col + dy);
-                targetCell.classList.add('alive');
-            });
-        }
-
-        function populateVisibleGrid() {
-            const { scrollTop, scrollLeft, clientWidth, clientHeight } = grid;
-            const startRow = Math.floor(scrollTop / 21) - 1;
-            const startCol = Math.floor(scrollLeft / 21) - 1;
-            const visibleRows = Math.ceil(clientHeight / 21) + 2;
-            const visibleCols = Math.ceil(clientWidth / 21) + 2;
-
-            for (let row = startRow; row < startRow + visibleRows; row++) {
-                for (let col = startCol; col < startCol + visibleCols; col++) {
-                    createCell(row, col);
-                }
-            }
-        }
-
-        function saveState() {
-            const currentState = Array.from(cells.entries()).map(([key, cell]) => [key, cell.classList.contains('alive')]);
-            history.push(currentState);
-        }
-
-        function restoreState() {
-            if (history.length > 0) {
-                const previousState = history.pop();
-                cells.forEach(cell => cell.classList.remove('alive'));
-                previousState.forEach(([key, alive]) => {
-                    if (alive) cells.get(key)?.classList.add('alive');
-                });
-                generation = Math.max(0, generation - 1);
-                updateStats();
-            }
-        }
-
-        function getAliveNeighbors(row, col) {
-            const directions = [
-                [-1, -1], [-1, 0], [-1, 1],
-                [0, -1], [0, 1],
-                [1, -1], [1, 0], [1, 1]
-            ];
-            let aliveNeighbors = 0;
-
-            directions.forEach(([dx, dy]) => {
-                const neighbor = cells.get(`${row + dx},${col + dy}`);
-                if (neighbor?.classList.contains('alive')) {
-                    aliveNeighbors++;
-                }
-            });
-
-            return aliveNeighbors;
-        }
-
-        function step() {
-            saveState();
-            const newStates = [];
-
-            cells.forEach((cell, key) => {
-                const [row, col] = key.split(',').map(Number);
-                const aliveNeighbors = getAliveNeighbors(row, col);
-                const isAlive = cell.classList.contains('alive');
-
-                if (isAlive && (aliveNeighbors < 2 || aliveNeighbors > 3)) {
-                    newStates.push({ cell, alive: false });
-                } else if (!isAlive && aliveNeighbors === 3) {
-                    newStates.push({ cell, alive: true });
-                }
-            });
-
-            newStates.forEach(({ cell, alive }) => {
-                if (alive) {
-                    cell.classList.add('alive');
-                } else {
-                    cell.classList.remove('alive');
-                }
-            });
-
-            generation++;
-            updateStats();
-        }
-
-        // Función para crear la siguiente generación usando 'step'
-        function nextGeneration() {
-            step();
-        }
-
-        function nextFrame() {
-            saveState();
-            step();
-        }
-
-        function randomSeed() {
-            cells.forEach(cell => cell.classList.remove('alive'));
-            const { scrollTop, scrollLeft, clientWidth, clientHeight } = grid;
-            const startRow = Math.floor(scrollTop / 21) - 1;
-            const startCol = Math.floor(scrollLeft / 21) - 1;
-            const visibleRows = Math.ceil(clientHeight / 21) + 2;
-            const visibleCols = Math.ceil(clientWidth / 21) + 2;
-
-            for (let row = startRow; row < startRow + visibleRows; row++) {
-                for (let col = startCol; col < startCol + visibleCols; col++) {
-                    const cell = createCell(row, col);
-                    if (Math.random() < 0.3) {
-                        cell.classList.add('alive');
-                    }
-                }
-            }
-            generation = 0;
-            updateStats();
-        }
-
-        function updateStats() {
-            const liveCells = Array.from(cells.values()).filter(cell => cell.classList.contains('alive')).length;
-            generationDisplay.textContent = generation;
-            liveCellsDisplay.textContent = liveCells;
-        }
-
-        startButton.addEventListener('click', () => {
-            if (interval) {
-                clearInterval(interval);
-                interval = null;
-                startButton.textContent = 'Iniciar Simulación';
-            } else {
-                interval = setInterval(() => {
-                    nextGeneration();
-                }, parseInt(speedControl.value));
-                startButton.textContent = 'Detener Simulación';
-            }
-        });
-
-        speedControl.addEventListener('input', () => {
-            if (interval) {
-                clearInterval(interval);
-                interval = setInterval(step, speedControl.value);
-            }
-        });
-
-        previousButton.addEventListener('click', () => {
-            if (interval) clearInterval(interval);
-            interval = null;
-            startButton.textContent = 'Iniciar Simulación';
-            restoreState();
-        });
-
-        nextButton.addEventListener('click', () => {
-            if (interval) clearInterval(interval);
-            interval = null;
-            startButton.textContent = 'Iniciar Simulación';
-            nextFrame();
-        });
-
-        randomButton.addEventListener('click', randomSeed);
-
-        saveButton.addEventListener('click', () => {
-            localStorage.setItem('gameState', JSON.stringify(Array.from(cells.entries())));
-        });
-
-        loadButton.addEventListener('click', () => {
-            const savedState = JSON.parse(localStorage.getItem('gameState') || '[]');
-            cells.forEach(cell => cell.classList.remove('alive'));
-            savedState.forEach(([key, alive]) => {
-                const [row, col] = key.split(',').map(Number);
-                const cell = createCell(row, col);
-                if (alive) cell.classList.add('alive');
-            });
-            generation = 0;
-            updateStats();
-        });
-
-        grid.addEventListener('scroll', populateVisibleGrid);
-        populateVisibleGrid();
-        updateStats();
-    </script>
+    <script src="js/game.js"></script>
 </body>
+
 </html>
