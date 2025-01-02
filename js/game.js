@@ -56,21 +56,43 @@ function applyPattern(row, col, pattern) {
         tub: [[0, 1], [1, 0], [1, 2], [2, 1]], // Correcto
 
         // Oscillators (Verificados)
-        blinker3: [[0, 0], [0, 1], [0, 2]], // Correcto - Periodo 2
-        beacon: [[0, 0], [0, 1], [1, 0], [1, 1], [2, 2], [2, 3], [3, 2], [3, 3]], // Correcto - Periodo 2
-        clock: [[0, 1], [1, 0], [1, 2], [2, 1]], // Corregido - Periodo 2
-        pulsar: [ // Correcto - Periodo 3
+        blinker: [[0, 0], [0, 1], [0, 2]], // Periodo 2
+        toad: [[0, 1], [0, 2], [0, 3], [1, 0], [1, 1], [1, 2]], // Periodo 2
+        beacon: [[0, 0], [0, 1], [1, 0], [1, 1], [2, 2], [2, 3], [3, 2], [3, 3]], // Periodo 2
+        pulsar: [ // Periodo 3
             [-2, -4], [-2, -3], [-2, -2], [-2, 2], [-2, 3], [-2, 4],
             [2, -4], [2, -3], [2, -2], [2, 2], [2, 3], [2, 4],
             [-4, -2], [-3, -2], [-2, -2], [2, -2], [3, -2], [4, -2],
             [-4, 2], [-3, 2], [-2, 2], [2, 2], [3, 2], [4, 2]
         ],
+        pentadecathlon: [ // Periodo 15
+            [0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7], [0, 8], [0, 9],
+            [-1, 1], [-1, 2], [-1, 7], [-1, 8],
+            [1, 1], [1, 2], [1, 7], [1, 8]
+        ],
 
         // Spaceships (Verificados)
         glider: [[0, 1], [1, 2], [2, 0], [2, 1], [2, 2]], // Corregido - Movimiento diagonal
-        lwss: [[0, 1], [0, 4], [1, 0], [1, 4], [2, 0], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4]], // Correcto
-        spaceship: [[0, 1], [0, 2], [0, 3], [0, 4], [1, 0], [1, 4], [2, 4], [3, 0], [3, 3]], // Correcto - MWSS
-        spaceship2: [[0, 0], [0, 3], [1, 4], [2, 0], [2, 4], [3, 1], [3, 2], [3, 3], [3, 4]], // Correcto - HWSS
+        lwss: [ // Lightweight Spaceship - Correcto
+            [0, 1], [0, 2], [0, 3], [0, 4],
+            [1, 0], [1, 4],
+            [2, 4],
+            [3, 0], [3, 3]
+        ],
+        mwss: [ // Middleweight Spaceship - Correcto
+            [0, 1], [0, 2], [0, 3], [0, 4], [0, 5],
+            [1, 0], [1, 5],
+            [2, 5],
+            [3, 0], [3, 4],
+            [4, 2]
+        ],
+        hwss: [ // Heavyweight Spaceship - Correcto
+            [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6],
+            [1, 0], [1, 6],
+            [2, 6],
+            [3, 0], [3, 5],
+            [4, 2], [4, 3]
+        ],
 
         // Methuselahs (Verificados)
         rpentomino: [[0, 1], [0, 2], [1, 0], [1, 1], [2, 1]], // Correcto
@@ -124,8 +146,16 @@ function populateVisibleGrid() {
 }
 
 function saveState() {
-    const currentState = Array.from(cells.entries()).map(([key, cell]) => [key, cell.classList.contains('alive')]);
-    history.push(currentState);
+    const currentState = Array.from(cells.entries())
+        .filter(([key, cell]) => cell.classList.contains('alive'))
+        .map(([key]) => key)
+        .sort()
+        .join(',');
+
+    if (history.length === 0 || currentState !== history[history.length - 1]) {
+        const stateToSave = Array.from(cells.entries()).map(([key, cell]) => [key, cell.classList.contains('alive')]);
+        history.push(stateToSave);
+    }
 }
 
 function restoreState() {
