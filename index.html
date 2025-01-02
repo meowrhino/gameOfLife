@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,6 +37,17 @@
 
         .cell.alive {
             background-color: black;
+        }
+
+        .toggle-menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            z-index: 999;
+        }
+
+        #controlsContainer.hidden {
+            display: none;
         }
 
         #controls {
@@ -116,7 +126,6 @@
                 font-size: 12px;
                 padding: 6px 12px;
             }
-
             h1 {
                 font-size: 18px;
                 padding: 4px 8px;
@@ -138,44 +147,53 @@
         }
     </style>
 </head>
-
 <body>
     <h1>Juego de la Vida</h1>
+
+    <button id="toggleMenu" class="toggle-menu">Mostrar / Ocultar Controles</button>
+
     <div id="stats">
         Generaciones: <span id="generation">0</span> | Celdas Vivas: <span id="live-cells">0</span>
     </div>
     <div id="grid"></div>
-    <div id="controls">
-        <button id="previous" class="secondary">Frame Anterior</button>
-        <button id="start" class="primary">Iniciar Simulación</button>
-        <button id="next" class="secondary">Frame Siguiente</button>
-        <div class="control-group">
-            <label for="speed">Velocidad:</label>
-            <input type="range" id="speed" min="100" max="2000" step="100" value="500">
-        </div>
-        <div class="control-group">
-            <label for="patterns">Patrones:</label>
-            <select id="patterns">
-                <option value="single">Cuadrado Simple</option>
-                <option value="glider">Glider</option>
-                <option value="pulsar">Pulsar</option>
-                <option value="lwss">Lightweight Spaceship</option>
-                <option value="block">Bloque</option>
-                <option value="beehive">Colmena</option>
-                <option value="loaf">Pan</option>
-                <option value="boat">Barco</option>
-                <option value="tub">Tubo</option>
-            </select>
 
+    <div id="controlsContainer">
+        <div id="controls">
+            <button id="previous" class="secondary">Frame Anterior</button>
+            <button id="start" class="primary">Iniciar Simulación</button>
+            <button id="next" class="secondary">Frame Siguiente</button>
+            <div class="control-group">
+                <label for="speed">Velocidad:</label>
+                <input type="range" id="speed" min="100" max="2000" step="100" value="500">
+            </div>
+            <div class="control-group">
+                <label for="patterns">Patrones:</label>
+                <select id="patterns">
+                    <option value="single">Cuadrado Simple</option>
+                    <option value="glider">Glider</option>
+                    <option value="pulsar">Pulsar</option>
+                    <option value="lwss">Lightweight Spaceship</option>
+                    <option value="block">Bloque</option>
+                    <option value="beehive">Colmena</option>
+                    <option value="loaf">Pan</option>
+                    <option value="boat">Barco</option>
+                    <option value="tub">Tubo</option>
+                </select>
+            </div>
+            <button id="save" class="secondary">Guardar Estado</button>
+            <button id="load" class="secondary">Cargar Estado</button>
         </div>
-
-        <button id="save" class="secondary">Guardar Estado</button>
-        <button id="load" class="secondary">Cargar Estado</button>
     </div>
-    
+
     <button id="random" class="secondary">Random Seed</button>
 
     <script>
+        const toggleButton = document.getElementById('toggleMenu');
+        const controlsContainer = document.getElementById('controlsContainer');
+        toggleButton.addEventListener('click', () => {
+            controlsContainer.classList.toggle('hidden');
+        });
+
         const grid = document.getElementById('grid');
         const startButton = document.getElementById('start');
         const previousButton = document.getElementById('previous');
@@ -240,7 +258,6 @@
                 targetCell.classList.add('alive');
             });
         }
-
 
         function populateVisibleGrid() {
             const { scrollTop, scrollLeft, clientWidth, clientHeight } = grid;
@@ -319,6 +336,11 @@
             updateStats();
         }
 
+        // Función para crear la siguiente generación usando 'step'
+        function nextGeneration() {
+            step();
+        }
+
         function nextFrame() {
             saveState();
             step();
@@ -356,7 +378,9 @@
                 interval = null;
                 startButton.textContent = 'Iniciar Simulación';
             } else {
-                interval = setInterval(step, speedControl.value);
+                interval = setInterval(() => {
+                    nextGeneration();
+                }, parseInt(speedControl.value));
                 startButton.textContent = 'Detener Simulación';
             }
         });
@@ -405,5 +429,4 @@
         updateStats();
     </script>
 </body>
-
 </html>
