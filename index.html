@@ -94,12 +94,7 @@
             transition: background-color 0.3s;
         }
 
-        button.primary {
-            background-color: black;
-            color: white;
-        }
-
-        button.secondary {
+        button {
             background-color: #e0e0e0;
         }
 
@@ -117,7 +112,6 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-
 
         #bottom-controls {
             position: fixed;
@@ -220,7 +214,7 @@
 </head>
 
 <body>
-    <button id="toggleMenu" class="toggle-menu">⚙️</button>
+    <button id="toggleMenu" class="toggle-menu">👁️</button>
 
     <div id="stats">
         Generaciones: <span id="generation">0</span> | Celdas Vivas: <span id="live-cells">0</span>
@@ -229,9 +223,9 @@
 
     <div id="controlsContainer">
         <div id="top-controls">
-            <button id="previous" class="secondary">Frame Anterior</button>
-            <button id="start" class="primary">Iniciar Simulación</button>
-            <button id="next" class="secondary">Frame Siguiente</button>
+            <button id="previous" class="button">⏮️</button>
+            <button id="start" class="button">▶️</button>
+            <button id="next" class="button">⏭️</button>
         </div>
 
         <div id="bottom-controls">
@@ -241,10 +235,10 @@
             </div>
 
             <div class="center-buttons">
-                <button id="save" class="secondary">Guardar Estado</button>
-                <button id="random" class="secondary">Random Seed</button>
-                <button id="load" class="secondary">Cargar Estado</button>
-                <button id="clear" class="secondary">Limpiar Todo</button> <!-- New button -->
+                <button id="save" class="button">💾</button> <!-- Save State -->
+                <button id="random" class="button">🎲</button> <!-- Random Seed -->
+                <button id="load" class="button">📂</button> <!-- Load State -->
+                <button id="clear" class="button">🧹</button> <!-- Clear All -->
             </div>
 
             <div class="control-group right">
@@ -255,17 +249,17 @@
                     
                     <!-- Still Life -->
                     <optgroup label="Still Life">
-                        <option value="block">Bloque</option>
                         <option value="beehive">Colmena</option>
-                        <option value="loaf">Pan</option>
+                        <option value="block">Bloque</option>
                         <option value="boat">Barco</option>
+                        <option value="loaf">Pan</option>
                         <option value="tub">Tubo</option>
                     </optgroup>
                 
                     <!-- Oscillators -->
                     <optgroup label="Oscillators">
-                        <option value="blinker3">Blinker3</option>
                         <option value="beacon">Beacon</option>
+                        <option value="blinker3">Blinker3</option>
                         <option value="clock">Clock</option>
                         <option value="pulsar">Pulsar</option>
                     </optgroup>
@@ -274,48 +268,31 @@
                     <optgroup label="Spaceships">
                         <option value="glider">Glider</option>
                         <option value="lwss">Lightweight Spaceship</option>
-                        <option value="spaceship">Spaceship</option>
-                        <option value="spaceship2">Spaceship 2</option>
+                        <option value="spaceship">Spaceship (MWSS)</option>
+                        <option value="spaceship2">Spaceship 2 (HWSS)</option>
                     </optgroup>
                 
                     <!-- Methuselahs -->
                     <optgroup label="Methuselahs">
                         <option value="acorn">Acorn</option>
-                        <option value="diehard">Diehard</option>
-                        <option value="rpentomino">R-pentomino</option>
                         <option value="bheptomino">B-heptomino</option>
-                        <option value="cheptomino">C-heptomino</option>
-                        <option value="eheptomino">E-heptomino</option>
+                        <option value="bheptomino2">B-heptomino 2</option>
+                        <option value="diehard">Diehard</option>
+                        <option value="loafer">Loafer</option>
+                        <option value="pi_heptomino">Pi-heptomino</option>
+                        <option value="rpentomino">R-pentomino</option>
                     </optgroup>
                 
                     <!-- Guns & Generators -->
                     <optgroup label="Guns & Generators">
                         <option value="gosperGliderGun">Gosper Glider Gun</option>
-                        <option value="gliderGenerator">Glider Generator</option>
-                        <option value="pulsarGenerator">Pulsar Generator</option>
                     </optgroup>
                 
                     <!-- Other Patterns -->
                     <optgroup label="Other Patterns">
                         <option value="bipole">Bipole</option>
                         <option value="butterfly">Butterfly</option>
-                        <option value="cross">Cross</option>
-                        <option value="eater">Eater</option>
-                        <option value="eater2">Eater 2</option>
-                        <option value="fireship">Fireship</option>
-                        <option value="galaxy">Galaxy</option>
-                        <option value="longship">Long Ship</option>
-                        <option value="octagon">Octagon</option>
                         <option value="pentadecathlon">Pentadecathlon</option>
-                        <option value="pentomino">Pentomino</option>
-                        <option value="phoenix">Phoenix</option>
-                        <option value="puffer">Puffer</option>
-                        <option value="quadpole">Quadpole</option>
-                        <option value="ship">Ship</option>
-                        <option value="spider">Spider</option>
-                        <option value="switchEngine">Switch Engine</option>
-                        <option value="thunderbird">Thunderbird</option>
-                        <option value="tripole">Tripole</option>
                     </optgroup>
                 </select>
             </div>
